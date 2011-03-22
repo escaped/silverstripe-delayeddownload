@@ -1,0 +1,46 @@
+# modified Version of
+# http://perishablepress.com/press/2007/11/21/creating-the-ultimate-htaccess-anti-hotlinking-strategy/
+
+###############################
+# ultimate hotlink protection #
+###############################
+
+# verify presence of mod rewrite
+<IfModule mod_rewrite.c>
+
+	# enable the rewrite engine
+	RewriteEngine on
+
+	# check that file exists
+	RewriteCond %{REQUEST_FILENAME} -f
+	
+	# check for requested file types
+	# include additional file types here
+	RewriteCond %{REQUEST_FILENAME} \.(docx?|pdf|rar|xls|xlt|zip|gif|jpe?g?|png)$                [NC]
+
+	# allow blank referrer requests
+	#RewriteCond %{HTTP_REFERER}     !^$
+
+	# allow some crawlers
+	RewriteCond %{HTTP_USER_AGENT} .*google.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*MSNBot.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*WebAlta.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*yahoo.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*ask.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*bing.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*teoma.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*slurp.* [NC]
+	RewriteCond %{HTTP_USER_AGENT} .*alexa.* [NC]
+	
+	# allow all requests from your domain
+	# edit the domain to match your own
+	RewriteCond %{HTTP_REFERER}     !^https?://([^.]+\.)?YOURDOMAIN.TLD      [NC]
+
+	# allow all requests from your ip address
+	# edit the ip address to match your own
+	#RewriteCond %{HTTP_REFERER}     !^https?://123\.123\.123\.123(.*)$ [NC]
+
+	# redirect to downloaad controller
+	RewriteRule ([^/]+\..{2,4})$	http://YOURDOMAIN.TLD/download/$1
+
+</ifModule>
